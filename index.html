@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía del Sistema de Numeración Binario - Colegio Montano</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for clear math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom Theme Colors for Colegio Montano */
+        :root {
+            --azul-principal: #1269A8;
+            --amarillo-brillante: #F7D615;
+            --verde-grisaceo: #54887D;
+            --azul-claro: #88B5C7;
+            --verde-oliva: #A6B046;
+            --blanco-suave: #F2F5E9;
+            --texto-oscuro: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--texto-oscuro);
+            margin: 0;
+            padding: 12px;
+        }
+
+        .board-frame {
+            border: 10px solid #2d3748;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            background-color: var(--blanco-suave);
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .board-header {
+            background-color: var(--azul-principal);
+            border-bottom: 4px solid var(--amarillo-brillante);
+        }
+
+        .tab-btn {
+            transition: all 0.25s ease;
+            font-weight: 600;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #ffffff;
+            opacity: 0.85;
+        }
+
+        .tab-btn:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-btn.active {
+            background-color: var(--blanco-suave);
+            color: var(--azul-principal);
+            opacity: 1;
+            border-top: 4px solid var(--amarillo-brillante);
+            font-weight: 700;
+        }
+
+        .card-custom {
+            background-color: #ffffff;
+            border-left: 5px solid var(--azul-principal);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        .solution-box {
+            background-color: #f0f8ff;
+            border: 1px dashed var(--azul-claro);
+            border-radius: 8px;
+        }
+
+        .badge-basico {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        .badge-intermedio {
+            background-color: #fef9c3;
+            color: #a16207;
+            border: 1px solid #fde047;
+        }
+
+        .badge-avanzado {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--azul-claro);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--azul-principal);
+        }
+    </style>
+</head>
+<body class="p-2 sm:p-4 min-h-screen">
+
+    <!-- MAIN BOARD CONTAINER -->
+    <div id="boardContainer" class="board-frame flex flex-col min-h-[90vh]">
+        
+        <!-- BOARD HEADER -->
+        <header class="board-header p-4 text-white flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Institutional Branding -->
+            <div class="flex items-center space-x-4">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyEop0yf6lZ7Jk9MILZxF1rBj4Oqs5esyhIQ&s" 
+                     alt="Logo Colegio Montano" 
+                     class="h-14 w-auto bg-white p-1 rounded-lg shadow-md object-contain"
+                     onerror="this.onerror=null; this.src='https://placehold.co/120x60/1269A8/FFFFFF?text=Montano';">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-wide uppercase">Pizarra Digital Interactiva</h1>
+                    <p class="text-xs md:text-sm text-yellow-300 font-semibold">Colegio Montano • Sexto Grado de Primaria</p>
+                </div>
+            </div>
+
+            <!-- Title & Fullscreen Action -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                <div class="text-right hidden sm:block">
+                    <span class="block text-xs uppercase tracking-wider text-blue-200">Materia: Matemática</span>
+                    <span class="font-bold text-lg text-white">Sistema de Numeración Binario</span>
+                </div>
+                <button onclick="toggleFullscreen()" 
+                        class="bg-[#F7D615] hover:bg-yellow-400 text-gray-900 font-bold py-2 px-4 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                    <i id="fullscreenIcon" class="fa-solid fa-expand"></i>
+                    <span id="fullscreenText" class="hidden sm:inline">Pantalla Completa</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- NAVIGATION MENU (Tabs) -->
+        <nav class="bg-[#1269A8] px-4 pt-2 flex flex-wrap gap-1 border-b border-gray-300 overflow-x-auto">
+            <button onclick="switchTab('teoria')" id="tab-teoria" class="tab-btn active px-4 py-2 text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-book-open"></i> 1. Teoría
+            </button>
+            <button onclick="switchTab('ejemplos')" id="tab-ejemplos" class="tab-btn px-4 py-2 text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-chalkboard-user"></i> 2. Ejemplos Resueltos
+            </button>
+            <button onclick="switchTab('ejercicios')" id="tab-ejercicios" class="tab-btn px-4 py-2 text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i> 3. Ejercicios Prácticos
+            </button>
+            <button onclick="switchTab('reflexion')" id="tab-reflexion" class="tab-btn px-4 py-2 text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-brain"></i> 4. Reflexión Crítica
+            </button>
+            <button onclick="switchTab('evaluacion')" id="tab-evaluacion" class="tab-btn px-4 py-2 text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-square-check"></i> 5. Evaluación Formativa
+            </button>
+        </nav>
+
+        <!-- CANVAS / WORKSPACE CONTENT -->
+        <main class="flex-grow p-4 md:p-6 overflow-y-auto bg-[#F2F5E9]">
+
+            <!-- ================= SECCIÓN 1: TEORÍA ================= -->
+            <section id="sec-teoria" class="space-y-6">
+                <div class="border-b-2 border-[#54887D] pb-3">
+                    <h2 class="text-2xl font-bold text-[#1269A8] flex items-center gap-2">
+                        <i class="fa-solid fa-laptop-code"></i> El Sistema de Numeración Binario (Base 2)
+                    </h2>
+                    <p class="text-gray-600 text-sm">El lenguaje universal de las computadoras, potencias de 2 y algoritmos de conversión.</p>
+                </div>
+
+                <!-- Conceptos Fundamentales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="card-custom p-5">
+                        <h3 class="font-bold text-lg text-[#1269A8] mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-microchip"></i> ¿Qué es la Base 2?
+                        </h3>
+                        <p class="text-sm text-gray-700 mb-4">A diferencia del sistema decimal (Base 10) que utiliza diez dígitos ($0$ al $9$), el <strong>sistema binario</strong> utiliza únicamente <strong>dos dígitos</strong>: <strong>0</strong> y <strong>1</strong>.</p>
+                        
+                        <div class="grid grid-cols-2 gap-3 text-center font-bold text-sm">
+                            <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 shadow-sm flex flex-col items-center">
+                                <span class="text-3xl text-blue-900 font-extrabold mb-1">0</span>
+                                <span class="text-xs text-gray-700">Apagado / Sin Paso de Corriente</span>
+                                <span class="text-xs text-blue-700 font-bold mt-1">BIT = 0</span>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 shadow-sm flex flex-col items-center">
+                                <span class="text-3xl text-blue-900 font-extrabold mb-1">1</span>
+                                <span class="text-xs text-gray-700">Encendido / Con Paso de Corriente</span>
+                                <span class="text-xs text-blue-700 font-bold mt-1">BIT = 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-5 border-l-4 border-[#A6B046]">
+                        <h3 class="font-bold text-lg text-[#1269A8] mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells"></i> Potencias de 2 (Valores Posicionales)
+                        </h3>
+                        <p class="text-sm text-gray-700 mb-2">Cada posición en un número binario tiene un valor según la potencia de 2 (de derecha a izquierda):</p>
+                        <div class="grid grid-cols-6 gap-1 text-center text-xs font-mono font-bold">
+                            <div class="bg-indigo-100 p-1.5 rounded border">2⁵<br><span class="text-indigo-900">32</span></div>
+                            <div class="bg-indigo-100 p-1.5 rounded border">2⁴<br><span class="text-indigo-900">16</span></div>
+                            <div class="bg-indigo-100 p-1.5 rounded border">2³<br><span class="text-indigo-900">8</span></div>
+                            <div class="bg-indigo-100 p-1.5 rounded border">2²<br><span class="text-indigo-900">4</span></div>
+                            <div class="bg-indigo-100 p-1.5 rounded border">2¹<br><span class="text-indigo-900">2</span></div>
+                            <div class="bg-indigo-100 p-1.5 rounded border">2⁰<br><span class="text-indigo-900">1</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Algoritmos de Conversión -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="font-bold text-xl text-[#1269A8] mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> Algoritmos de Conversión
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- De Binario a Decimal -->
+                        <div class="p-4 rounded-lg bg-slate-50 border-t-4 border-blue-500">
+                            <span class="text-xs font-bold uppercase text-blue-600">Método 1</span>
+                            <h4 class="font-bold text-gray-800 my-1">De Binario a Decimal</h4>
+                            <p class="text-xs text-gray-600 mb-2">Multiplica cada dígito binario por su valor posicional ($1, 2, 4, 8, 16, 32...$) y <strong>suma únicamente los valores donde hay un 1</strong>.</p>
+                            <div class="text-xs font-mono bg-white p-2 rounded border leading-relaxed">
+                                Ejemplo: $1011_2$<br>
+                                • $(1 \times 8) + (0 \times 4) + (1 \times 2) + (1 \times 1)$<br>
+                                • $8 + 0 + 2 + 1 = \mathbf{11_{10}}$
+                            </div>
+                        </div>
+
+                        <!-- De Decimal a Binario -->
+                        <div class="p-4 rounded-lg bg-slate-50 border-t-4 border-amber-500">
+                            <span class="text-xs font-bold uppercase text-amber-600">Método 2</span>
+                            <h4 class="font-bold text-gray-800 my-1">De Decimal a Binario (Divisiones Sucesivas)</h4>
+                            <p class="text-xs text-gray-600 mb-2">Divide el número entre 2 sucesivamente. Anota los <strong>residuos (0 o 1)</strong> y léelos <strong>de abajo hacia arriba</strong> (del último residuo al primero).</p>
+                            <div class="text-xs font-mono bg-white p-2 rounded border leading-relaxed">
+                                Ejemplo: $13_{10}$ a binario<br>
+                                • $13 \div 2 = 6$ (Residuo 1) ↑<br>
+                                • $6 \div 2 = 3$ (Residuo 0) │<br>
+                                • $3 \div 2 = 1$ (Residuo 1) │<br>
+                                • $1 \div 2 = 0$ (Residuo 1) │<br>
+                                **Resultado: $1101_2$**
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuadro de Notación y Vocabulario -->
+                <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-300">
+                    <h4 class="font-bold text-amber-900 text-sm flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-key"></i> Claves del Vocabulario Informático
+                    </h4>
+                    <p class="text-xs text-amber-800 leading-relaxed">
+                        • <strong>BIT:</strong> Acrónimo de <em>Binary Digit</em> (Dígito Binario), la unidad mínima de información ($0$ o $1$).<br>
+                        • <strong>BYTE:</strong> Grupo de <strong>8 bits</strong> consecutivos (ejemplo: $10101100_2$). Permite representar $2^8 = 256$ valores distintos (caracteres, letras, símbolos).<br>
+                        • <strong>Subíndices:</strong> Usamos $101_2$ para indicar Base 2 y $5_{10}$ para evitar confusiones.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ================= SECCIÓN 2: EJEMPLOS RESUELTOS ================= -->
+            <section id="sec-ejemplos" class="space-y-6 hidden">
+                <div class="border-b-2 border-[#54887D] pb-3">
+                    <h2 class="text-2xl font-bold text-[#1269A8] flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user"></i> Ejemplos Resueltos Paso a Paso
+                    </h2>
+                    <p class="text-gray-600 text-sm">15 Ejemplos minuciosamente detallados y divididos por niveles de complejidad.</p>
+                </div>
+
+                <!-- Filtro de Niveles -->
+                <div class="flex gap-2 mb-4">
+                    <button onclick="filterExamples('all')" class="ex-filter-btn px-3 py-1 rounded-full text-xs font-bold bg-[#1269A8] text-white">Todos</button>
+                    <button onclick="filterExamples('basico')" class="ex-filter-btn px-3 py-1 rounded-full text-xs font-bold bg-green-200 text-green-800">Básico (hasta 15)</button>
+                    <button onclick="filterExamples('intermedio')" class="ex-filter-btn px-3 py-1 rounded-full text-xs font-bold bg-amber-200 text-amber-800">Intermedio (hasta 255)</button>
+                    <button onclick="filterExamples('avanzado')" class="ex-filter-btn px-3 py-1 rounded-full text-xs font-bold bg-red-200 text-red-800">Avanzado (Operaciones / Bytes)</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="examplesContainer">
+
+                    <!-- BÁSICO (5 Ejemplos - Números de 0 a 15) -->
+                    <div class="card-custom p-4 ex-card basico">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-basico">Básico #1</span>
+                            <span class="text-xs font-mono text-gray-500">Binario a Decimal</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $101_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Posiciones: $(4, 2, 1)$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $(1 \times 4) + (0 \times 2) + (1 \times 1)$<br>
+                            • $4 + 0 + 1 = 5$<br>
+                            <strong>Resultado: $5_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card basico">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-basico">Básico #2</span>
+                            <span class="text-xs font-mono text-gray-500">Decimal a Binario</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $9_{10}$ a binario</h3>
+                        <p class="text-sm text-gray-600 my-2">División entre 2:</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $9 \div 2 = 4$ (Residuo 1)<br>
+                            • $4 \div 2 = 2$ (Residuo 0)<br>
+                            • $2 \div 2 = 1$ (Residuo 0)<br>
+                            • $1 \div 2 = 0$ (Residuo 1)<br>
+                            <strong>Resultado: $1001_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card basico">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-basico">Básico #3</span>
+                            <span class="text-xs font-mono text-gray-500">Binario a Decimal</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $1111_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Posiciones: $(8, 4, 2, 1)$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $8 + 4 + 2 + 1 = 15$<br>
+                            <strong>Resultado: $15_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card basico">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-basico">Básico #4</span>
+                            <span class="text-xs font-mono text-gray-500">Decimal a Binario</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $6_{10}$ a binario</h3>
+                        <p class="text-sm text-gray-600 my-2">Descomposición rápida en suma de potencias ($4 + 2$):</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • Posición 4: 1<br>
+                            • Posición 2: 1<br>
+                            • Posición 1: 0<br>
+                            <strong>Resultado: $110_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card basico">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-basico">Básico #5</span>
+                            <span class="text-xs font-mono text-gray-500">Lectura Directa</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $1010_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Posiciones activas: $(8 \text{ y } 2)$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $8 + 2 = 10$<br>
+                            <strong>Resultado: $10_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <!-- INTERMEDIO (5 Ejemplos - Números de 16 a 255) -->
+                    <div class="card-custom p-4 ex-card intermedio">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-intermedio">Intermedio #1</span>
+                            <span class="text-xs font-mono text-gray-500">Decimal a Binario</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $25_{10}$ a binario</h3>
+                        <p class="text-sm text-gray-600 my-2">Suma de potencias: $16 + 8 + 1$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $16 (2^4) \rightarrow 1$<br>
+                            • $8 (2^3) \rightarrow 1$<br>
+                            • $4 (2^2) \rightarrow 0$<br>
+                            • $2 (2^1) \rightarrow 0$<br>
+                            • $1 (2^0) \rightarrow 1$<br>
+                            <strong>Resultado: $11001_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card intermedio">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-intermedio">Intermedio #2</span>
+                            <span class="text-xs font-mono text-gray-500">Binario a Decimal</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $101101_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Posiciones: $(32, 16, 8, 4, 2, 1)$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $32 + 0 + 8 + 4 + 0 + 1$<br>
+                            • $32 + 8 + 4 + 1 = 45$<br>
+                            <strong>Resultado: $45_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card intermedio">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-intermedio">Intermedio #3</span>
+                            <span class="text-xs font-mono text-gray-500">Decimal a Binario</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $100_{10}$ a binario</h3>
+                        <p class="text-sm text-gray-600 my-2">Divisiones por 2:</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $100 \div 2 = 50$ (0), $50 \div 2 = 25$ (0)<br>
+                            • $25 \div 2 = 12$ (1), $12 \div 2 = 6$ (0)<br>
+                            • $6 \div 2 = 3$ (0), $3 \div 2 = 1$ (1)<br>
+                            • $1 \div 2 = 0$ (1)<br>
+                            <strong>Resultado: $1100100_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card intermedio">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-intermedio">Intermedio #4</span>
+                            <span class="text-xs font-mono text-gray-500">Formato Byte (8 bits)</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $10000001_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Primer y último bit activos ($128 \text{ y } 1$):</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $128 + 1 = 129$<br>
+                            <strong>Resultado: $129_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card intermedio">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-intermedio">Intermedio #5</span>
+                            <span class="text-xs font-mono text-gray-500">Byte Completo</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Convertir $11111111_2$ a decimal</h3>
+                        <p class="text-sm text-gray-600 my-2">Suma de los 8 bits en 1 ($128+64+32+16+8+4+2+1$):</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $2^8 - 1 = 256 - 1 = 255$<br>
+                            <strong>Resultado: $255_{10}$ (Máximo valor de 1 Byte)</strong>
+                        </div>
+                    </div>
+
+                    <!-- AVANZADO (5 Ejemplos - Sumas, Código ASCII y Operaciones) -->
+                    <div class="card-custom p-4 ex-card avanzado">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-avanzado">Avanzado #1</span>
+                            <span class="text-xs font-mono text-gray-500">Suma Binaria Directa</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Sumar $101_2 + 011_2$ en binario</h3>
+                        <p class="text-sm text-gray-600 my-2">Reglas: $1+1 = 10_2$ (llevamos 1):</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • Decimal: $5 + 3 = 8$<br>
+                            • Binario: $101_2 + 011_2 = 1000_2$<br>
+                            <strong>Resultado: $1000_2$ ($8_{10}$)</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card avanzado">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-avanzado">Avanzado #2</span>
+                            <span class="text-xs font-mono text-gray-500">Código ASCII</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Representación de la letra 'A' ($65_{10}$)</h3>
+                        <p class="text-sm text-gray-600 my-2">Convertir $65$ a Byte de 8 bits ($64 + 1$):</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $64 (2^6) \rightarrow 1$<br>
+                            • $1 (2^0) \rightarrow 1$<br>
+                            • Restantes 6 bits = 0<br>
+                            <strong>Resultado: $01000001_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card avanzado">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-avanzado">Avanzado #3</span>
+                            <span class="text-xs font-mono text-gray-500">Suma con Acarreo</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Sumar $1101_2 + 1011_2$</h3>
+                        <p class="text-sm text-gray-600 my-2">Verificación decimal: $13 + 11 = 24$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $13_{10} = 1101_2$<br>
+                            • $11_{10} = 1011_2$<br>
+                            • $24_{10} = 16 + 8 \rightarrow 11000_2$<br>
+                            <strong>Resultado: $11000_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card avanzado">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-avanzado">Avanzado #4</span>
+                            <span class="text-xs font-mono text-gray-500">Resta Convirtiendo</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Restar $1110_2 - 0101_2$</h3>
+                        <p class="text-sm text-gray-600 my-2">Verificación decimal: $14 - 5 = 9$</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $1110_2 = 14_{10}$<br>
+                            • $0101_2 = 5_{10}$<br>
+                            • $14 - 5 = 9_{10}$<br>
+                            <strong>Resultado en binario: $1001_2$</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-custom p-4 ex-card avanzado">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold badge-avanzado">Avanzado #5</span>
+                            <span class="text-xs font-mono text-gray-500">Multiplicación por 2</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800">Multiplicar $101_2$ por $2$ (Desplazamiento)</h3>
+                        <p class="text-sm text-gray-600 my-2">En binario, multiplicar por 2 equivale a agregar un $0$ al final:</p>
+                        <div class="text-xs font-mono bg-slate-100 p-2 rounded leading-relaxed">
+                            • $101_2 = 5_{10}$<br>
+                            • $5 \times 2 = 10_{10}$<br>
+                            • Agregamos $0$ a $101_2 \rightarrow 1010_2$<br>
+                            <strong>Resultado: $1010_2$ ($10_{10}$)</strong>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SECCIÓN 3: EJERCICIOS PRÁCTICOS ================= -->
+            <section id="sec-ejercicios" class="space-y-6 hidden">
+                <div class="border-b-2 border-[#54887D] pb-3">
+                    <h2 class="text-2xl font-bold text-[#1269A8] flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square"></i> Ejercicios Prácticos Interactivos
+                    </h2>
+                    <p class="text-gray-600 text-sm">Resuelve cada ejercicio en tu cuaderno y despliega la solución para verificar tu proceso.</p>
+                </div>
+
+                <div class="space-y-4">
+                    
+                    <!-- BÁSICO -->
+                    <h3 class="font-bold text-lg text-emerald-800 bg-emerald-100 p-2 rounded-lg flex items-center gap-2">
+                        <i class="fa-solid fa-seedling"></i> Nivel Básico (5 Ejercicios)
+                    </h3>
+
+                    <!-- B1 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio B-1:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-basico">Básico</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Convierte el número decimal <strong>7</strong> a su representación binaria.</p>
+                        <button onclick="toggleSolution('sol-bb1')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bb1">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bb1" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $7 = 4 + 2 + 1$<br>
+                            • Posición de 4: 1<br>
+                            • Posición de 2: 1<br>
+                            • Posición de 1: 1<br>
+                            <strong>Respuesta: $111_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- B2 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio B-2:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-basico">Básico</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">¿Cuál es el valor en el sistema decimal de la cifra binaria <strong>$1100_2$</strong>?</p>
+                        <button onclick="toggleSolution('sol-bb2')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bb2">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bb2" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • Posiciones: $(8, 4, 2, 1)$<br>
+                            • Sumamos los 1s: $8 + 4 = 12$<br>
+                            <strong>Respuesta: $12_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <!-- B3 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio B-3:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-basico">Básico</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Escribe en binario la cantidad de días que tiene una semana (<strong>7 días</strong>).</p>
+                        <button onclick="toggleSolution('sol-bb3')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bb3">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bb3" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $7 \div 2 = 3$ (Residuo 1)<br>
+                            • $3 \div 2 = 1$ (Residuo 1)<br>
+                            • $1 \div 2 = 0$ (Residuo 1)<br>
+                            <strong>Respuesta: $111_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- B4 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio B-4:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-basico">Básico</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">¿Cuál número binario representa al número $0_{10}$ y al número $1_{10}$?</p>
+                        <button onclick="toggleSolution('sol-bb4')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bb4">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bb4" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • En ambos sistemas (decimal y binario), el 0 y el 1 se escriben exactamente igual.<br>
+                            <strong>Respuesta: $0_2$ y $1_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- B5 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio B-5:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-basico">Básico</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Compara y determina cuál número es mayor: <strong>$101_2$</strong> o <strong>$110_2$</strong>.</p>
+                        <button onclick="toggleSolution('sol-bb5')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bb5">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bb5" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $101_2 = 4 + 0 + 1 = 5_{10}$<br>
+                            • $110_2 = 4 + 2 + 0 = 6_{10}$<br>
+                            <strong>Respuesta: $110_2$ ($6_{10}$) es mayor que $101_2$ ($5_{10}$).</strong>
+                        </div>
+                    </div>
+
+                    <!-- INTERMEDIO -->
+                    <h3 class="font-bold text-lg text-amber-800 bg-amber-100 p-2 rounded-lg flex items-center gap-2 mt-6">
+                        <i class="fa-solid fa-tree"></i> Nivel Intermedio (5 Ejercicios)
+                    </h3>
+
+                    <!-- I1 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio I-1:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-intermedio">Intermedio</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Convierte la edad de un estudiante de sexto grado (<strong>12 años</strong>) al sistema binario.</p>
+                        <button onclick="toggleSolution('sol-bi1')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bi1">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bi1" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $12 = 8 + 4$<br>
+                            • Posición 8: 1<br>
+                            • Posición 4: 1<br>
+                            • Posición 2: 0 | Posición 1: 0<br>
+                            <strong>Respuesta: $1100_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- I2 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio I-2:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-intermedio">Intermedio</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Expresa en decimal el número binario de 6 bits: <strong>$111000_2$</strong>.</p>
+                        <button onclick="toggleSolution('sol-bi2')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bi2">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bi2" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • Posiciones: $(32, 16, 8, 4, 2, 1)$<br>
+                            • Sumamos activos: $32 + 16 + 8 = 56$<br>
+                            <strong>Respuesta: $56_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <!-- I3 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio I-3:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-intermedio">Intermedio</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Convierte el número <strong>50</strong> al sistema binario por el método de divisiones sucesivas.</p>
+                        <button onclick="toggleSolution('sol-bi3')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bi3">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bi3" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $50 \div 2 = 25$ (0), $25 \div 2 = 12$ (1)<br>
+                            • $12 \div 2 = 6$ (0), $6 \div 2 = 3$ (0)<br>
+                            • $3 \div 2 = 1$ (1), $1 \div 2 = 0$ (1)<br>
+                            <strong>Respuesta: $110010_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- I4 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio I-4:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-intermedio">Intermedio</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Si un Byte tiene la secuencia <strong>$00111100_2$</strong>, ¿cuál es su equivalente decimal?</p>
+                        <button onclick="toggleSolution('sol-bi4')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bi4">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bi4" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • Posiciones activas: $32 + 16 + 8 + 4$<br>
+                            • Suma: $32 + 16 + 8 + 4 = 60$<br>
+                            <strong>Respuesta: $60_{10}$</strong>
+                        </div>
+                    </div>
+
+                    <!-- I5 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio I-5:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-intermedio">Intermedio</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Escribe el número decimal <strong>63</strong> en formato de 6 bits binarios.</p>
+                        <button onclick="toggleSolution('sol-bi5')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-bi5">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-bi5" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $63 = 32 + 16 + 8 + 4 + 2 + 1$<br>
+                            • Todos los 6 bits están encendidos.<br>
+                            <strong>Respuesta: $111111_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- AVANZADO -->
+                    <h3 class="font-bold text-lg text-red-800 bg-red-100 p-2 rounded-lg flex items-center gap-2 mt-6">
+                        <i class="fa-solid fa-mountain"></i> Nivel Avanzado (5 Ejercicios)
+                    </h3>
+
+                    <!-- A1 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio A-1:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-avanzado">Avanzado</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Resuelve la suma de los números binarios: <strong>$1010_2 + 0110_2$</strong>. Expresa la respuesta en binario y decimal.</p>
+                        <button onclick="toggleSolution('sol-ba1')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-ba1">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-ba1" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $1010_2 = 10_{10}$<br>
+                            • $0110_2 = 6_{10}$<br>
+                            • Suma decimal: $10 + 6 = 16_{10}$<br>
+                            • $16_{10}$ en binario = $10000_2$<br>
+                            <strong>Respuesta: $10000_2$ ($16_{10}$)</strong>
+                        </div>
+                    </div>
+
+                    <!-- A2 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio A-2:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-avanzado">Avanzado</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">En código ASCII, la letra 'B' corresponde al número decimal $66$. Escribe la letra 'B' en un Byte de 8 bits.</p>
+                        <button onclick="toggleSolution('sol-ba2')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-ba2">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-ba2" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $66 = 64 + 2$<br>
+                            • Bit 64 ($2^6$): 1 | Bit 2 ($2^1$): 1<br>
+                            • Completamos los 8 bits: $01000010_2$<br>
+                            <strong>Respuesta: $01000010_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- A3 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio A-3:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-avanzado">Avanzado</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Un microprocesador realiza la resta: <strong>$1111_2 - 0111_2$</strong>. ¿Cuál es el resultado en binario?</p>
+                        <button onclick="toggleSolution('sol-ba3')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-ba3">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-ba3" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $1111_2 = 15_{10}$<br>
+                            • $0111_2 = 7_{10}$<br>
+                            • Resta: $15 - 7 = 8_{10}$<br>
+                            • $8_{10}$ en binario = $1000_2$<br>
+                            <strong>Respuesta: $1000_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- A4 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio A-4:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-avanzado">Avanzado</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">Escribe el año actual <strong>2026</strong> en sistema binario posicional.</p>
+                        <button onclick="toggleSolution('sol-ba4')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-ba4">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-ba4" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • $2026 = 1024 + 512 + 256 + 128 + 64 + 32 + 8 + 2$<br>
+                            • $2^{10}(1024) + 2^9(512) + 2^8(256) + 2^7(128) + 2^6(64) + 2^5(32) + 2^3(8) + 2^1(2)$<br>
+                            <strong>Respuesta: $11111101010_2$</strong>
+                        </div>
+                    </div>
+
+                    <!-- A5 -->
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-[#1269A8]">Ejercicio A-5:</span>
+                            <span class="text-xs px-2 py-0.5 rounded badge-avanzado">Avanzado</span>
+                        </div>
+                        <p class="text-gray-800 font-medium">¿Cuántos números diferentes se pueden representar utilizando un código binario de <strong>4 bits</strong>?</p>
+                        <button onclick="toggleSolution('sol-ba5')" class="mt-3 text-xs bg-[#1269A8] text-white px-3 py-1.5 rounded hover:bg-blue-800 transition flex items-center gap-1">
+                            <i class="fa-solid fa-eye"></i> <span id="btn-text-sol-ba5">Mostrar Solución</span>
+                        </button>
+                        <div id="sol-ba5" class="solution-box p-3 mt-3 hidden text-sm text-gray-700">
+                            <strong class="text-emerald-700">Solución paso a paso:</strong><br>
+                            • La fórmula de combinaciones posibles en base 2 es $2^n$, donde $n$ es el número de bits.<br>
+                            • $2^4 = 2 \times 2 \times 2 \times 2 = 16$ combinaciones.<br>
+                            • Van desde $0000_2$ ($0$) hasta $1111_2$ ($15$).<br>
+                            <strong>Respuesta: 16 combinaciones distintas.</strong>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SECCIÓN 4: REFLEXIÓN CRÍTICA ================= -->
+            <section id="sec-reflexion" class="space-y-6 hidden">
+                <div class="border-b-2 border-[#54887D] pb-3">
+                    <h2 class="text-2xl font-bold text-[#1269A8] flex items-center gap-2">
+                        <i class="fa-solid fa-brain"></i> Análisis y Pensamiento Crítico
+                    </h2>
+                    <p class="text-gray-600 text-sm">Cuestionamientos sobre el impacto tecnológico, lógica computacional y abstracción matemática.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div class="bg-white p-5 rounded-xl border-t-4 border-[#1269A8] shadow-md">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-[#1269A8] font-bold">1</div>
+                            <h3 class="font-bold text-gray-800 text-lg">¿Por qué las computadoras usan Binario?</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                            Si los seres humanos preferimos el sistema decimal porque tenemos 10 dedos, ¿por qué los circuitos integrados y transistores de las computadoras utilizan únicamente Base 2?
+                        </p>
+                        <div class="bg-blue-50 p-3 rounded-lg text-xs text-blue-900 border border-blue-200">
+                            <strong>Orientación Pedagógica:</strong> Es físicamente mucho más confiable y fácil para un circuito electrónico distinguir únicamente entre dos estados físicos estables (Hay voltaje = 1 / No hay voltaje = 0) que medir diez niveles distintos de electricidad sin cometer errores de lectura.
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border-t-4 border-[#F7D615] shadow-md">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-800 font-bold">2</div>
+                            <h3 class="font-bold text-gray-800 text-lg">De Números a Texto e Imágenes</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                            Si las computadoras solo entienden ceros y unos ($0$ y $1$), ¿cómo es posible que podamos ver videos, escuchar música y escribir textos en una pantalla?
+                        </p>
+                        <div class="bg-yellow-50 p-3 rounded-lg text-xs text-yellow-900 border border-yellow-200">
+                            <strong>Orientación Pedagógica:</strong> Todo tipo de información se codifica mediante reglas abstractas: las letras usan números ASCII/Unicode, los colores de los píxeles usan combinaciones binarias de Rojo, Verde y Azul (RGB), y el sonido codifica ondas de frecuencia en números binarios a gran velocidad.
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border-t-4 border-[#54887D] shadow-md">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-[#54887D] font-bold">3</div>
+                            <h3 class="font-bold text-gray-800 text-lg">Comparación de Longitud Escrita</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                            El número decimal $1000$ requiere solo 4 dígitos en Base 10, pero en binario requiere 10 dígitos ($1111101000_2$). ¿Qué ventajas y desventajas tiene este crecimiento de caracteres?
+                        </p>
+                        <div class="bg-teal-50 p-3 rounded-lg text-xs text-teal-900 border border-teal-200">
+                            <strong>Orientación Pedagógica:</strong> En binario se simplifica drásticamente la variedad de símbolos a memorizar (solo 2), pero a costa de necesitar secuencias más largas para representar cantidades grandes.
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border-t-4 border-[#A6B046] shadow-md">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center text-[#A6B046] font-bold">4</div>
+                            <h3 class="font-bold text-gray-800 text-lg">El Genio de Gottfried Leibniz</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                            El matemático Gottfried Leibniz documentó el sistema binario moderno en el siglo XVII, ¡mucho antes de que existiera la primera computadora! ¿Por qué la matemática pura es clave para los inventos del futuro?
+                        </p>
+                        <div class="bg-lime-50 p-3 rounded-lg text-xs text-lime-900 border border-lime-200">
+                            <strong>Orientación Pedagógica:</strong> Demuestra que las estructuras lógicas abstractas descubiertas por los matemáticos a menudo encuentran su aplicación práctica siglos después, sirviendo como fundamento para revoluciones tecnológicas.
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= SECCIÓN 5: EVALUACIÓN FORMATIVA ================= -->
+            <section id="sec-evaluacion" class="space-y-6 hidden">
+                <div class="border-b-2 border-[#54887D] pb-3 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#1269A8] flex items-center gap-2">
+                            <i class="fa-solid fa-square-check"></i> Evaluación Formativa Rápida
+                        </h2>
+                        <p class="text-gray-600 text-sm">Responde las preguntas para verificar tu grado de comprensión del sistema binario.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz Interactivo -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-6" id="quizForm">
+
+                    <!-- Pregunta 1 -->
+                    <div class="border-b pb-4">
+                        <p class="font-bold text-gray-800 mb-2">1. ¿Cuál es la base del sistema binario y qué dígitos utiliza exclusivamente?</p>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq1" value="a" class="accent-[#1269A8]"> A) Base 10; utiliza los dígitos del 0 al 9.
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq1" value="b" class="accent-[#1269A8]"> B) Base 2; utiliza únicamente los dígitos 0 y 1.
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq1" value="c" class="accent-[#1269A8]"> C) Base 8; utiliza los dígitos del 0 al 7.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="border-b pb-4">
+                        <p class="font-bold text-gray-800 mb-2">2. ¿Qué número decimal equivale al número binario $1010_2$?</p>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq2" value="a" class="accent-[#1269A8]"> A) 10
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq2" value="b" class="accent-[#1269A8]"> B) 8
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq2" value="c" class="accent-[#1269A8]"> C) 12
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3 -->
+                    <div class="border-b pb-4">
+                        <p class="font-bold text-gray-800 mb-2">3. ¿Cuántos bits componen exactamente 1 Byte de información?</p>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq3" value="a" class="accent-[#1269A8]"> A) 4 bits
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq3" value="b" class="accent-[#1269A8]"> B) 10 bits
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq3" value="c" class="accent-[#1269A8]"> C) 8 bits
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 4 -->
+                    <div>
+                        <p class="font-bold text-gray-800 mb-2">4. Al convertir el número decimal $15$ a binario, ¿cuál es el resultado obtenido?</p>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq4" value="a" class="accent-[#1269A8]"> A) $1111_2$
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq4" value="b" class="accent-[#1269A8]"> B) $1001_2$
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-slate-50 cursor-pointer">
+                                <input type="radio" name="bq4" value="c" class="accent-[#1269A8]"> C) $1010_2$
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botón de Evaluación -->
+                    <button onclick="evaluateBinaryQuiz()" class="w-full bg-[#1269A8] hover:bg-blue-800 text-white font-bold py-3 rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Validar Respuestas
+                    </button>
+                </div>
+
+                <!-- Resultado de la Evaluación -->
+                <div id="quizResult" class="hidden p-5 rounded-xl border text-center font-bold"></div>
+
+            </section>
+
+        </main>
+
+        <!-- FOOTER / CREDITOS -->
+        <footer class="bg-slate-800 text-white text-xs p-3 text-center border-t-2 border-[#F7D615] flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <span>© Colegio Montano • Recurso Educativo Digital Autónomo</span>
+            </div>
+            <div class="text-gray-400">
+                <span>Optimizado para Canvas Education & Smart Boards</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Automatic KaTeX Render Initialization
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const sections = ['teoria', 'ejemplos', 'ejercicios', 'reflexion', 'evaluacion'];
+            sections.forEach(id => {
+                document.getElementById(`sec-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).classList.remove('active');
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // Re-render LaTeX math formulas if dynamic section content toggles
+            if (window.renderMathInElement) {
+                renderMathInElement(document.getElementById(`sec-${tabId}`), {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // Toggle Solution Visibility in Exercises
+        function toggleSolution(solId) {
+            const solElement = document.getElementById(solId);
+            const btnText = document.getElementById(`btn-text-${solId}`);
+            
+            if (solElement.classList.contains('hidden')) {
+                solElement.classList.remove('hidden');
+                if (btnText) btnText.innerText = 'Ocultar Solución';
+
+                // Ensure KaTeX renders math inside revealed solution box
+                if (window.renderMathInElement) {
+                    renderMathInElement(solElement, {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "$", right: "$", display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            } else {
+                solElement.classList.add('hidden');
+                if (btnText) btnText.innerText = 'Mostrar Solución';
+            }
+        }
+
+        // Filter Solved Examples by Level
+        function filterExamples(level) {
+            const cards = document.querySelectorAll('.ex-card');
+            cards.forEach(card => {
+                if (level === 'all' || card.classList.contains(level)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Fullscreen Mode Logic (Fullscreen API)
+        function toggleFullscreen() {
+            const board = document.getElementById('boardContainer');
+            const icon = document.getElementById('fullscreenIcon');
+            const text = document.getElementById('fullscreenText');
+
+            if (!document.fullscreenElement) {
+                if (board.requestFullscreen) {
+                    board.requestFullscreen();
+                } else if (board.webkitRequestFullscreen) {
+                    board.webkitRequestFullscreen();
+                } else if (board.msRequestFullscreen) {
+                    board.msRequestFullscreen();
+                }
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+                text.innerText = 'Salir de Pantalla';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+                text.innerText = 'Pantalla Completa';
+            }
+        }
+
+        // Formative Quiz Evaluation Logic
+        function evaluateBinaryQuiz() {
+            const answers = {
+                bq1: 'b',
+                bq2: 'a',
+                bq3: 'c',
+                bq4: 'a'
+            };
+
+            let score = 0;
+            let total = 4;
+
+            for (let q in answers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q]) {
+                    score++;
+                }
+            }
+
+            const resultBox = document.getElementById('quizResult');
+            resultBox.classList.remove('hidden');
+
+            if (score === total) {
+                resultBox.className = "p-5 rounded-xl border bg-emerald-100 border-emerald-400 text-emerald-900 text-center font-bold";
+                resultBox.innerHTML = `<i class="fa-solid fa-circle-check text-2xl text-emerald-600 mb-2"></i><br>¡Excelente trabajo! Obtuviste ${score} de ${total} respuestas correctas (100%). Dominas el sistema de numeración binario.`;
+            } else if (score >= 2) {
+                resultBox.className = "p-5 rounded-xl border bg-amber-100 border-amber-400 text-amber-900 text-center font-bold";
+                resultBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-2xl text-amber-600 mb-2"></i><br>¡Buen intento! Obtuviste ${score} de ${total} respuestas correctas. Repasa los valores posicionales ($1, 2, 4, 8, 16$) y el método de conversión.`;
+            } else {
+                resultBox.className = "p-5 rounded-xl border bg-red-100 border-red-400 text-red-900 text-center font-bold";
+                resultBox.innerHTML = `<i class="fa-solid fa-circle-xmark text-2xl text-red-600 mb-2"></i><br>Obtuviste ${score} de ${total} respuestas correctas. Te recomendamos revisar la sección 1 (Teoría) y los ejemplos resueltos antes de reintentar.`;
+            }
+
+            if (window.renderMathInElement) {
+                renderMathInElement(resultBox, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    </script>
+</body>
+</html>
